@@ -1,0 +1,21 @@
+[project]
+name = "MicroAST"
+version = "0.1.0"
+description = "Pip-installable version of https://github.com/EndyWon/MicroAST"
+authors = [
+  { name = "Federico Simonetta", email = "22996003+00sapo@users.noreply.github.com" },
+]
+dependencies = [
+  "torch>=2.1.2",
+  "pillow>=10.1.0",
+  "numpy>=1.26.2",
+  "torchvision>=0.16.2",
+  "setuptools>=69.0.2",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
+
+
+[tool.pdm]
+package-type = "application"
