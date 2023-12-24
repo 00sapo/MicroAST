@@ -12,7 +12,8 @@ from torchvision.utils import save_image
 from . import net_microAST as net
 
 
-def test_transform(size: Optional[int], crop: bool):
+def transform_image(image, size: Optional[int] = None, crop: bool = False):
+    """Create a transform function that resizes, crops, reshape, and normalizes the image"""
     transform_list = []
     if size is not None:
         transform_list.append(transforms.Resize(size))
@@ -20,7 +21,7 @@ def test_transform(size: Optional[int], crop: bool):
         transform_list.append(transforms.CenterCrop(size))
     transform_list.append(transforms.ToTensor())
     transform = transforms.Compose(transform_list)
-    return transform
+    return transform(image)
 
 
 parser = argparse.ArgumentParser()
@@ -107,16 +108,37 @@ parser.add_argument(
 )
 
 
-def stylize(network, content, style, alpha=1.0):
-    """Stylize the content image with the style image using the model network and the given alpha."""
+def stylize(network, content, style, alpha=1.0, _print_elapsed_time=False):
+    """
+    Stylize the content image with the style image using the model network and the given alpha.
+
+    `content` and `style` should be 4-dim tensors with shape [BATCH, 3, H, W], but [3, H, W] also works for batch size 1.
+
+    The input data tpe should be float. In general, use `microast.transform_image` before of using this function.
+    """
+
+    # Add batch dimension if not there
+    if content.dim() < 4:
+        content = content.unsqueeze(0)
+    if style.dim() < 4:
+        style = style.unsqueeze(0)
+
+    # Put channel dim before H and W
+    if content.shape[3] <= 4:
+        content = content.transpose(1, 3)
+    if style.shape[3] <= 4:
+        style = style.transpose(1, 3)
+
     torch.cuda.synchronize()
-    tic = time.time()
+    if _print_elapsed_time:
+        tic = time.time()
 
     with torch.no_grad():
         output = network(content, style, alpha)
 
     torch.cuda.synchronize()
-    print("Elapsed time: %.4f seconds" % (time.time() - tic))
+    if _print_elapsed_time:
+        print("Elapsed time: %.4f seconds" % (time.time() - tic))
     return output
 
 
@@ -128,7 +150,7 @@ def save_output(output_array, output_path):
 def load_image(path, resize=None, crop=False):
     """Load the image from the given path, optionally cropping and resizing it. You still need to move it to the proper device"""
     image = Image.open(str(path))
-    image = test_transform(resize, crop)(image).unsqueeze(0)
+    image = transform_image(image, resize, crop)
     return image
 
 
@@ -183,7 +205,9 @@ def main(args):
             try:
                 content = load_image(content_path).to(device)
                 style = load_image(style_path).to(device)
-                output_array = stylize(network, content, style, args.alpha)
+                output_array = stylize(
+                    network, content, style, args.alpha, _print_elapsed_time=True
+                )
                 if args.output:
                     output_path = Path(args.output)
                 else:

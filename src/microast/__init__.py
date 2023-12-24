@@ -1,1 +1,2 @@
-from .__main__ import load_image, load_models, main, save_output, stylize
+from .__main__ import (load_image, load_models, main, save_output, stylize,
+                       transform_image)
