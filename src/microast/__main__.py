@@ -146,8 +146,8 @@ def load_models(content_encoder_path, style_encoder_path, modulator_path, decode
 
     content_encoder.load_state_dict(torch.load(content_encoder_path))
     style_encoder.load_state_dict(torch.load(style_encoder_path))
-    modulator.load_state_dict(modulator_path)
-    decoder.load_state_dict(decoder_path)
+    modulator.load_state_dict(torch.load(modulator_path))
+    decoder.load_state_dict(torch.load(decoder_path))
     network = net.TestNet(content_encoder, style_encoder, modulator, decoder)
 
     return network
