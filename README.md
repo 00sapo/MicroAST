@@ -23,7 +23,7 @@ You need to download the models from the original repo.
 ### API
 
 ```python
-from microast import load_image, load_models, save_output, stylize
+from microast import load_image, load_models, save_output, stylize, transform_image
 
 # Input paths
 style_path = 'style.png'
@@ -36,13 +36,21 @@ decoder_path = 'decoder.pth'
 alpha = 1.0
 device = 'cuda:0'
 
+already_loaded_image = np.array(Image.open(content_path))
+
 # The code
 # N.B. The handling of devices is all up to you
 network = load_models(content_encoder_path, style_encoder_path, modulator_path, decoder_path).to(device) # a model
 content = load_image(content_path).to(device) # a tensor
+# or
+content = transform_image(already_loaded_image).to(device) # a tensor
+
 style = load_image(style_path).to(device) # a tensor
 output_array = stylize(network, content, style, alpha).cpu()
+# output_array is a tensor of shape (1, 3, H, W) and dtype float32
 save_output(output_array, output_path)
+```
+
 ```
 
 ## Citation:
@@ -50,14 +58,17 @@ save_output(output_array, output_path)
 If you find the ideas and codes useful for your research, please cite the paper:
 
 ```
+
 @inproceedings{wang2023microast,
-  title={MicroAST: Towards Super-Fast Ultra-Resolution Arbitrary Style Transfer},
-  author={Wang, Zhizhong and Zhao, Lei and Zuo, Zhiwen and Li, Ailin and Chen, Haibo and Xing, Wei and Lu, Dongming},
-  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
-  year={2023}
+title={MicroAST: Towards Super-Fast Ultra-Resolution Arbitrary Style Transfer},
+author={Wang, Zhizhong and Zhao, Lei and Zuo, Zhiwen and Li, Ailin and Chen, Haibo and Xing, Wei and Lu, Dongming},
+booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+year={2023}
 }
+
 ```
 
 ## Acknowledgement:
 
 We refer to some codes and ideas from [AdaIN](https://github.com/naoto0804/pytorch-AdaIN) and [DIN](https://ojs.aaai.org/index.php/AAAI/article/view/5862). Great thanks to them!
+```
