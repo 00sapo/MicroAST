@@ -21,7 +21,7 @@ def transform_image(image, size: Optional[int] = None, crop: bool = False):
         transform_list.append(transforms.CenterCrop(size))
     transform_list.append(transforms.ToTensor())
     transform = transforms.Compose(transform_list)
-    return transform(image)
+    return transform(image).float()
 
 
 parser = argparse.ArgumentParser()
