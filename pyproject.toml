@@ -6,7 +6,6 @@ authors = [
   { name = "Federico Simonetta", email = "22996003+00sapo@users.noreply.github.com" },
 ]
 dependencies = [
-  "torch>=2.1.2",
   "pillow>=10.1.0",
   "numpy>=1.23.5",
   "torchvision>=0.16.2",
