@@ -14,6 +14,11 @@ from . import net_microAST as net
 THIS_DIR = Path(__file__).parent
 WEIGHTS_DIR = THIS_DIR / "weights"
 
+CONTENT_ENCODER_PATH = "content_encoder_iter_160000.pth.tar"
+STYLE_ENCODER_PATH = "style_encoder_iter_160000.pth.tar"
+MODULATOR_PATH = "modulator_iter_160000.pth.tar"
+DECODER_PATH = "decoder_iter_160000.pth.tar"
+
 
 def transform_image(image, size: Optional[int] = None, crop: bool = False):
     """Create a transform function that resizes, crops, reshape, and normalizes the image"""
@@ -48,24 +53,24 @@ parser.add_argument(
     "--content_encoder",
     type=str,
     help="Filename (without directory) of the content encoder checkpoint",
-    default="content_encoder_iter_160000.pth.tar",
+    default=CONTENT_ENCODER_PATH,
 )
 parser.add_argument(
     "--style_encoder",
     type=str,
-    default="style_encoder_iter_160000.pth.tar",
+    default=STYLE_ENCODER_PATH,
     help="Filename (without directory) of the style encoder checkpoint",
 )
 parser.add_argument(
     "--modulator",
     type=str,
-    default="modulator_iter_160000.pth.tar",
+    default=MODULATOR_PATH,
     help="Filename (without directory) of the modulator checkpoint",
 )
 parser.add_argument(
     "--decoder",
     type=str,
-    default="decoder_iter_160000.pth.tar",
+    default=DECODER_PATH,
     help="Filename (without directory) of the decoder checkpoint",
 )
 
@@ -157,8 +162,13 @@ def load_image(path, resize=None, crop=False):
     return image
 
 
-def load_models(content_encoder_path, style_encoder_path, modulator_path, decoder_path):
-    """Load the models from the given paths; you still need to move the built network to the proper device"""
+def load_models(
+    content_encoder_path=None,
+    style_encoder_path=None,
+    modulator_path=None,
+    decoder_path=None,
+):
+    """Load the models from the given paths; you still need to move the built network to the proper device. By default, load the pre-trained models."""
     content_encoder = net.Encoder()
     style_encoder = net.Encoder()
     modulator = net.Modulator()
@@ -168,6 +178,11 @@ def load_models(content_encoder_path, style_encoder_path, modulator_path, decode
     style_encoder.eval()
     modulator.eval()
     decoder.eval()
+
+    content_encoder_path = content_encoder_path or WEIGHTS_DIR / CONTENT_ENCODER_PATH
+    style_encoder_path = style_encoder_path or WEIGHTS_DIR / STYLE_ENCODER_PATH
+    modulator_path = modulator_path or WEIGHTS_DIR / MODULATOR_PATH
+    decoder_path = decoder_path or WEIGHTS_DIR / DECODER_PATH
 
     content_encoder.load_state_dict(torch.load(content_encoder_path))
     style_encoder.load_state_dict(torch.load(style_encoder_path))
