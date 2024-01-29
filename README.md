@@ -17,7 +17,7 @@ This fork helps using it in other projects.
 You need to download the models from the original repo.
 
 - Help: `microast -h`
-- Stylize a single image: `microast -s <style_image> -c <content_image> -o <output_image> -m <model_dir>`
+- Stylize a single image: `microast -s <style_image> -c <content_image> -o <output_image>`
 - Stylize all images in a directory: `microast --style_dir <style_dir> --content_dir <content_dir> --output_dir <output_dir> -model_dir <model_dir>`
 
 ### API
@@ -51,24 +51,23 @@ output_array = stylize(network, content, style, alpha).cpu()
 save_output(output_array, output_path)
 ```
 
-```
-
 ## Citation:
 
 If you find the ideas and codes useful for your research, please cite the paper:
 
 ```
-
 @inproceedings{wang2023microast,
 title={MicroAST: Towards Super-Fast Ultra-Resolution Arbitrary Style Transfer},
 author={Wang, Zhizhong and Zhao, Lei and Zuo, Zhiwen and Li, Ailin and Chen, Haibo and Xing, Wei and Lu, Dongming},
 booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
 year={2023}
 }
-
 ```
 
 ## Acknowledgement:
 
 We refer to some codes and ideas from [AdaIN](https://github.com/naoto0804/pytorch-AdaIN) and [DIN](https://ojs.aaai.org/index.php/AAAI/article/view/5862). Great thanks to them!
+
+```
+
 ```

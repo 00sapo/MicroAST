@@ -11,6 +11,9 @@ from torchvision.utils import save_image
 
 from . import net_microAST as net
 
+THIS_DIR = Path(__file__).parent
+WEIGHTS_DIR = THIS_DIR / "weights"
+
 
 def transform_image(image, size: Optional[int] = None, crop: bool = False):
     """Create a transform function that resizes, crops, reshape, and normalizes the image"""
@@ -39,7 +42,7 @@ parser.add_argument(
     "-m",
     help="Directory where the model checkpoints are",
     type=str,
-    default="models",
+    default=WEIGHTS_DIR,
 )
 parser.add_argument(
     "--content_encoder",
